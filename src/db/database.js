@@ -87,9 +87,38 @@ const getAllTransactions = () => {
     });
 };
 
+/**
+ * Retrieves dashboard statistics from the database.
+ * @returns {Promise<Object>}
+ */
+const getDashboardStats = () => {
+    return new Promise((resolve, reject) => {
+        const query = `
+      SELECT 
+        COUNT(*) as total_transactions,
+        SUM(CASE WHEN risk_flag IS NOT NULL THEN 1 ELSE 0 END) as flagged_transactions,
+        SUM(CASE WHEN risk_flag = 'HIGH_RISK' THEN 1 ELSE 0 END) as high_risk,
+        SUM(CASE WHEN risk_flag = 'SUSPICIOUS' THEN 1 ELSE 0 END) as suspicious
+      FROM transactions
+    `;
+        db.get(query, [], (err, row) => {
+            if (err) reject(err);
+            else {
+                resolve({
+                    total_transactions: row.total_transactions || 0,
+                    flagged_transactions: row.flagged_transactions || 0,
+                    high_risk: row.high_risk || 0,
+                    suspicious: row.suspicious || 0
+                });
+            }
+        });
+    });
+};
+
 module.exports = {
     db,
     getUserTransactionCount,
     saveTransaction,
-    getAllTransactions
+    getAllTransactions,
+    getDashboardStats
 };

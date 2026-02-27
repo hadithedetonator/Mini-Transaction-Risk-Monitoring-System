@@ -62,4 +62,18 @@ router.get('/transactions', async (req, res) => {
     }
 });
 
+/**
+ * GET /dashboard
+ * Returns overall risk statistics.
+ */
+router.get('/dashboard', async (req, res) => {
+    try {
+        const stats = await database.getDashboardStats();
+        return res.json(stats);
+    } catch (error) {
+        console.error('Error fetching dashboard stats:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;
