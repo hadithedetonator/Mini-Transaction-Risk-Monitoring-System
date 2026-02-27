@@ -8,18 +8,20 @@ const { evaluateRisk } = require('../services/riskEngine');
  * Processes a new transaction, evaluates risk, and stores it.
  */
 router.post('/transactions', async (req, res) => {
-    const { transaction_id, user_id, amount, timestamp, device_id } = req.body;
+    const { transaction_id, user_id, amount, device_id } = req.body;
 
-    // 1. Basic Validation
-    if (!transaction_id || !user_id || amount === undefined || !timestamp || !device_id) {
+    // 1. Basic Validation 
+    if (!transaction_id || !user_id || amount === undefined || !device_id) {
         return res.status(400).json({ error: 'Missing required fields' });
     }
 
+    // Generate timestamp on the server to ensure consistency across all devices
+    const timestamp = new Date().toISOString();
+
     try {
         // 2. Evaluate Fraud Rules
-        // Check user history for Rule 2
         const userTransactionCount = await database.getUserTransactionCount(user_id);
-        const { risk_flag, rule_triggered } = evaluateRisk(req.body, userTransactionCount);
+        const { risk_flag, rule_triggered } = evaluateRisk({ amount }, userTransactionCount);
 
         // 3. Save to Database
         const transaction = {
