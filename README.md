@@ -57,7 +57,6 @@ Frontend UI will be live at: `http://localhost:5173`
 
 ```
 mini-risk-system/
-├── public/               # Legacy vanilla JS frontend (deprecated, kept for reference)
 ├── client/               # React frontend (Vite)
 │   ├── src/
 │   │   ├── App.jsx       # Single component: form, table, dashboard
