@@ -20,7 +20,7 @@ db.serialize(() => {
 
     db.run(`CREATE INDEX IF NOT EXISTS idx_user_id ON transactions(user_id)`);
     db.run(`CREATE INDEX IF NOT EXISTS idx_risk_flag ON transactions(risk_flag)`);
-    db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON transactions(timestamp)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_created_at ON transactions(created_at)`);
 });
 
 /**

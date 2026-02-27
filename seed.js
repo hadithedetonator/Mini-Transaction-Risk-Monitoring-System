@@ -60,8 +60,8 @@ const transactions = [
     ["TX056", "U030", 24000, "2026-02-23T13:47:00", "D30"],
     ["TX057", "U030", 25000, "2026-02-23T13:49:00", "D30"],
     ["TX058", "U030", 26000, "2026-02-23T13:51:00", "D30"],
-    ["TX059", "U005", 30000, "2026-02-23T10:30:00", "D5"],
-    ["TX060", "U001", 5000, "2026-02-23T10:00:00", "D1"]
+    ["TX010", "U005", 30000, "2026-02-23T10:30:00", "D5"], // Intended duplicate
+    ["TX001", "U001", 5000, "2026-02-23T10:00:00", "D1"]  // Intended duplicate
 ];
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -98,8 +98,8 @@ async function seed() {
             console.log(`TX: ${transaction_id} | Error: ${error.message}`);
         }
 
-        // Small delay so each transaction gets a distinct created_at timestamp
-        await sleep(100);
+        // 1 second delay so each transaction is clearly visible as it gets submitted
+        await sleep(1000);
     }
 }
 

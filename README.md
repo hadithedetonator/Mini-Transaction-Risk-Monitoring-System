@@ -14,7 +14,7 @@ A full-stack web application that processes financial transactions, evaluates fr
 
 ---
 
-## Quick Start
+## Setup steps
 
 ### Prerequisites
 - [Node.js](https://nodejs.org/) v16.x or higher
@@ -53,7 +53,7 @@ Frontend UI will be live at: `http://localhost:5173`
 
 ---
 
-## Project Structure
+## Architecture explanation
 
 ```
 mini-risk-system/
@@ -107,8 +107,8 @@ Submit a new transaction. Timestamp is **generated server-side** to ensure consi
 ```
 
 **Error Responses:**
-- `400` — Missing required fields
-- `409` — Duplicate `transaction_id`
+- `400` - Missing required fields
+- `409` - Duplicate `transaction_id`
 
 ---
 
@@ -170,19 +170,19 @@ CREATE TABLE transactions (
     rule_triggered TEXT,              -- 'Rule1', 'Rule2', or NULL
     created_at     DATETIME DEFAULT CURRENT_TIMESTAMP
 );
-
+-- Indexes for faster queries
 CREATE INDEX idx_user_id   ON transactions(user_id);
 CREATE INDEX idx_risk_flag ON transactions(risk_flag);
-CREATE INDEX idx_timestamp ON transactions(timestamp);
+CREATE INDEX idx_created_at ON transactions(created_at);
 ```
 
-`idx_user_id` is the most critical index — it enables O(log n) lookups when counting a user's transaction history for Rule 2.
+`idx_user_id` is the most critical index - it enables O(log n) lookups when counting a user's transaction history for Rule 2.
 
 ---
 
 ## Fraud Rule Structure
 
-Rules are evaluated inside `src/services/riskEngine.js`, which is intentionally **decoupled from the route layer**. The function is stateless — it receives the transaction and the pre-fetched user transaction count, making it independently testable.
+Rules are evaluated inside `src/services/riskEngine.js`, which is intentionally **decoupled from the route layer**. The function is stateless - it receives the transaction and the pre-fetched user transaction count, making it independently testable.
 
 | Rule | Condition | Priority | Flag |
 |:---|:---|:---|:---|
@@ -202,7 +202,7 @@ Timestamps are generated **server-side** at the moment the `POST /api/transactio
 - Consistent timezone-aware timestamps regardless of the submitting device's local time.
 - No client clock drift or timezone mismatch between simultaneous submissions from different devices.
 
-Clients do **not** send a `timestamp` field — it is intentionally excluded from request validation.
+Clients do **not** send a `timestamp` field - it is intentionally excluded from request validation.
 
 ---
 
@@ -222,7 +222,7 @@ A seeding script is provided to populate the database with 60 sample transaction
 node seed.js
 ```
 
-The script sends each transaction to `POST /api/transactions` sequentially and prints the result and fraud flag for each. Duplicate `transaction_id` entries (TX059, TX060) are handled gracefully and reported as `409` without stopping the script.
+The script sends each transaction to `POST /api/transactions` sequentially and prints the result and fraud flag for each.
 
 ---
 
