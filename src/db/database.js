@@ -5,7 +5,7 @@ const dbPath = path.resolve(__dirname, '../../database.sqlite');
 const db = new sqlite3.Database(dbPath);
 
 db.serialize(() => {
-  db.run(`
+    db.run(`
     CREATE TABLE IF NOT EXISTS transactions (
       transaction_id TEXT PRIMARY KEY,
       user_id TEXT NOT NULL,
@@ -18,9 +18,9 @@ db.serialize(() => {
     )
   `);
 
-  db.run(`CREATE INDEX IF NOT EXISTS idx_user_id ON transactions(user_id)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_risk_flag ON transactions(risk_flag)`);
-  db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON transactions(timestamp)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_user_id ON transactions(user_id)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_risk_flag ON transactions(risk_flag)`);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_timestamp ON transactions(timestamp)`);
 });
 
 /**
@@ -29,16 +29,16 @@ db.serialize(() => {
  * @returns {Promise<number>}
  */
 const getUserTransactionCount = (user_id) => {
-  return new Promise((resolve, reject) => {
-    db.get(
-      'SELECT COUNT(*) as count FROM transactions WHERE user_id = ?',
-      [user_id],
-      (err, row) => {
-        if (err) reject(err);
-        else resolve(row.count);
-      }
-    );
-  });
+    return new Promise((resolve, reject) => {
+        db.get(
+            'SELECT COUNT(*) as count FROM transactions WHERE user_id = ?',
+            [user_id],
+            (err, row) => {
+                if (err) reject(err);
+                else resolve(row.count);
+            }
+        );
+    });
 };
 
 /**
@@ -47,31 +47,49 @@ const getUserTransactionCount = (user_id) => {
  * @returns {Promise<void>}
  */
 const saveTransaction = (transaction) => {
-  const {
-    transaction_id,
-    user_id,
-    amount,
-    timestamp,
-    device_id,
-    risk_flag,
-    rule_triggered
-  } = transaction;
+    const {
+        transaction_id,
+        user_id,
+        amount,
+        timestamp,
+        device_id,
+        risk_flag,
+        rule_triggered
+    } = transaction;
 
-  return new Promise((resolve, reject) => {
-    db.run(
-      `INSERT INTO transactions (transaction_id, user_id, amount, timestamp, device_id, risk_flag, rule_triggered) 
+    return new Promise((resolve, reject) => {
+        db.run(
+            `INSERT INTO transactions (transaction_id, user_id, amount, timestamp, device_id, risk_flag, rule_triggered) 
        VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [transaction_id, user_id, amount, timestamp, device_id, risk_flag, rule_triggered],
-      (err) => {
-        if (err) reject(err);
-        else resolve();
-      }
-    );
-  });
+            [transaction_id, user_id, amount, timestamp, device_id, risk_flag, rule_triggered],
+            (err) => {
+                if (err) reject(err);
+                else resolve();
+            }
+        );
+    });
+};
+
+/**
+ * Retrieves all transactions from the database.
+ * @returns {Promise<Array>}
+ */
+const getAllTransactions = () => {
+    return new Promise((resolve, reject) => {
+        db.all(
+            'SELECT * FROM transactions ORDER BY created_at DESC',
+            [],
+            (err, rows) => {
+                if (err) reject(err);
+                else resolve(rows);
+            }
+        );
+    });
 };
 
 module.exports = {
-  db,
-  getUserTransactionCount,
-  saveTransaction
+    db,
+    getUserTransactionCount,
+    saveTransaction,
+    getAllTransactions
 };

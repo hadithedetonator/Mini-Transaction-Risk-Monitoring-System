@@ -48,4 +48,18 @@ router.post('/transactions', async (req, res) => {
     }
 });
 
+/**
+ * GET /transactions
+ * Returns all transactions stored in the database.
+ */
+router.get('/transactions', async (req, res) => {
+    try {
+        const transactions = await database.getAllTransactions();
+        return res.json(transactions);
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        return res.status(500).json({ error: 'Internal Server Error' });
+    }
+});
+
 module.exports = router;
