@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3000;
 // Middleware to parse JSON
 app.use(express.json());
 
+// Serve static files
+app.use(express.static('public'));
+
 // Load Routes
 app.use('/api', transactionRoutes);
 

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaction Risk Monitor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Mini Transaction Risk Monitoring</h1>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="card">
+            <h2>Dashboard</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="label">Total Transactions</span>
+                    <span id="stat-total" class="value">0</span>
+                </div>
+                <div class="stat-item flagged">
+                    <span class="label">Flagged</span>
+                    <span id="stat-flagged" class="value">0</span>
+                </div>
+                <div class="stat-item high-risk">
+                    <span class="label">High Risk</span>
+                    <span id="stat-high" class="value">0</span>
+                </div>
+                <div class="stat-item suspicious">
+                    <span class="label">Suspicious</span>
+                    <span id="stat-suspicious" class="value">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transaction Form -->
+        <section class="card">
+            <h2>Upload Transaction</h2>
+            <form id="transaction-form">
+                <div class="form-group">
+                    <label>Transaction ID</label>
+                    <input type="text" id="tx-id" required placeholder="e.g. TX999">
+                </div>
+                <div class="form-group">
+                    <label>User ID</label>
+                    <input type="text" id="user-id" required placeholder="e.g. U1001">
+                </div>
+                <div class="form-group">
+                    <label>Amount</label>
+                    <input type="number" id="amount" required step="0.01" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label>Device ID</label>
+                    <input type="text" id="device-id" required placeholder="e.g. D1">
+                </div>
+                <button type="submit">Submit Transaction</button>
+            </form>
+            <p id="form-message"></p>
+        </section>
+
+        <!-- Transactions Table -->
+        <section class="card">
+            <h2>Transaction History</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>User</th>
+                            <th>Amount</th>
+                            <th>Timestamp</th>
+                            <th>Device</th>
+                            <th>Risk Flag</th>
+                            <th>Rule</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transaction-list">
+                        <!-- Rows will be added here -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
