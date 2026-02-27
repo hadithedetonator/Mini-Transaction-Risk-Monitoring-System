@@ -56,7 +56,7 @@ The system evaluates transactions against two specific rules:
 ---
 
 ## Assumptions
-- **Transaction Uniqueness**: `transaction_id` is provided by the client and is unique. The database prevents duplicates via a Primary Key constraint.
+- **Transaction Uniqueness**: `transaction_id` is client-provided and expected to be unique per transaction. The system enforces this at the database level via a `PRIMARY KEY` constraint and returns a `409 Conflict` error if a duplicate is submitted, allowing the caller to handle it gracefully.
 - **Real-time Processing**: Fraud evaluation must happen before the transaction is saved (synchronously).
 - **Relational Data**: SQL is preferred over NoSQL to ensure consistent count aggregations for Rule 2.
 
@@ -70,3 +70,19 @@ To scale this system effectively to handle **1.15 million transactions per day**
 3.  **Caching Layer**: Introducing **Redis** to store ephemeral transaction counts for active users, reducing the load on the primary database for frequency-based checks.
 4.  **Load Balancing**: Deploying the Node.js application across multiple instances using a load balancer to handle incoming HTTP traffic.
 5.  **Read/Write Splitting**: Utilizing read replicas for the dashboard and history table to keep the primary node optimized for high-throughput writes.
+
+---
+
+## AI Usage Disclosure
+
+This project was developed with the assistance of an AI coding assistant (Antigravity).
+
+- **What was used**: The AI was utilized for boilerplate generation, UI/UX styling suggestions (Vanilla CSS), SQL query optimization for the dashboard aggregation, and the creation of the database seeding script.
+- **Why it was used**: To accelerate the development of standard utility components and ensure a clean, responsive design for the frontend dashboard within an efficient timeframe.
+- **AI-Assisted Parts**:
+    - **Frontend Styling**: Modern CSS patterns for the dashboard cards and table highlighting.
+    - **Dashboard Aggregation**: Refinement of the `SUM(CASE ...)` SQL logic to ensure efficient single-query stats.
+    - **Seeding Script**: Generation of the `seed.js` script to automate data entry for testing.
+    - **Documentation**: Structuring and formatting the project documentation.
+
+*Note: The core architecture patterns, database schema definitions, and the specific fraud rule logic were implemented based on human-provided constraints.*

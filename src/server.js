@@ -13,8 +13,26 @@ app.use(express.static('public'));
 // Load Routes
 app.use('/api', transactionRoutes);
 
-// Simple health check
-app.get('/health', (req, res) => res.json({ status: 'OK' }));
+// Health check - verifies server is alive AND database is reachable
+app.get('/health', (req, res) => {
+    const { db } = require('./db/database');
+    db.get('SELECT 1', [], (err) => {
+        if (err) {
+            return res.status(503).json({
+                status: 'ERROR',
+                database: 'unreachable',
+                uptime: process.uptime(),
+                timestamp: new Date().toISOString()
+            });
+        }
+        return res.status(200).json({
+            status: 'OK',
+            database: 'connected',
+            uptime: process.uptime(),
+            timestamp: new Date().toISOString()
+        });
+    });
+});
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);
